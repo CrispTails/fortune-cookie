@@ -1,0 +1,134 @@
+<html>
+<head>
+
+<title>FortuneWeb</title>
+
+<style>
+
+body {
+	background-color: #f1f1f1;
+	margin: 0;
+	padding: 0;
+	font-family: sans-serif;
+	text-align: center;
+}
+
+.fortune-cookie-shell {
+	width: 300px;
+	height: 300px;
+	position: relative;
+	background: url("https://upload.wikimedia.org/wikipedia/commons/2/24/Fortune_cookie.png");
+	background-size: cover;
+	margin: 20px auto;
+}
+
+.fortune-cookie-paper {
+	width: 300px;
+	height: 300px;
+	position: absolute;
+	top: 0;
+	left: 0;
+	background: url("https://www.nicepng.com/png/full/104-1042080_time-precious-as-gold-transparent-fortune-cookie-png.png");
+	background-size: cover;
+	opacity: 0;
+	transition: opacity 0.3s ease-in-out;
+}
+
+.fortune-cookie-paper.open {
+	opacity: 1;
+}
+
+.fortune-cookie-text {
+	position: absolute;
+	top: 100px;
+	left: 40px;
+	width: 220px;
+	padding: 10px;
+	background-color: #fff;
+	box-shadow: 0 0 10px rgba(0,0,0,0.3);
+	display: none;
+}
+
+.fortune-cookie-text.open {
+	display: block;
+}
+
+.fortune-cookie-text p {
+	margin: 0;
+	padding: 0;
+	font-size: 18px;
+	font-weight: bold;
+	color: #333;
+	text-align: center;
+	line-height: 1.5;
+}
+
+.fortune-cookie-learn-chinese {
+	position: absolute;
+	top: 220px;
+	left: 40px;
+	width: 220px;
+	font-size: 18px;
+	font-weight: bold;
+	color: #333;
+	text-align: center;
+	line-height: 1.5;
+	display: none;
+}
+
+.fortune-cookie-learn-chinese.open {
+	display: block;
+}
+
+.fortune-cookie-button {
+	display: block;
+	margin: 20px auto;
+}
+
+</style>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/semantic-ui/2.4.1/semantic.min.js"></script>
+<script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+
+</head>
+
+<body>
+
+	<div class="fortune-cookie-shell">
+		<div class="fortune-cookie-paper">
+			<div class="fortune-cookie-text">
+				<p id="quote"></p>
+			</div>
+			<div class="fortune-cookie-learn-chinese" id="chineseWord"></div>
+		</div>
+	</div>
+	<button class="ui button fortune-cookie-button" id="crack">Crack</button>
+
+<script>
+const crack = document.querySelector("#crack");
+const paper = document.querySelector(".fortune-cookie-paper");
+const text = document.querySelector(".fortune-cookie-text");
+const learnChinese = document.querySelector(".fortune-cookie-learn-chinese");
+
+crack.addEventListener("click", () => {
+	paper.classList.toggle("open");
+	text.classList.toggle("open");
+	learnChinese.classList.toggle("open");
+	
+	axios.get("https://api.quotable.io/random").then(response => {
+		document.querySelector("#quote").textContent = response.data.content;
+	})
+	
+	axios.get("https://www.chinese-tools.com/tools/random-char.html").then(response => {
+		let parser = new DOMParser();
+		let doc = parser.parseFromString(response.data, "text/html");
+		let chineseWord = doc.querySelector("#word").textContent;
+		
+		document.querySelector("#chineseWord").textContent = chineseWord;
+	})
+});
+
+</script>
+
+</body>
+</html>
